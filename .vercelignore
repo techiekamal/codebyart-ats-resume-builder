@@ -1,0 +1,8 @@
+# Ignore docs folder during deployment
+docs/
+
+# Other files to ignore
+*.md
+!README.md
+.env.local
+.env*.local
