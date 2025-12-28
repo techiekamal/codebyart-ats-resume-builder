@@ -5,7 +5,7 @@
 ![React](https://img.shields.io/badge/React-19.2-61DAFB?style=flat-square&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?style=flat-square&logo=typescript)
 ![Vite](https://img.shields.io/badge/Vite-6.2-646CFF?style=flat-square&logo=vite)
-![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
+![License](https://img.shields.io/badge/License-Proprietary-red?style=flat-square)
 
 **A modern, ATS-friendly resume builder with real-time preview and optimization suggestions.**
 
@@ -46,7 +46,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/techiekamal21/codebyart-ats-resume-builder.git
+git clone https://github.com/techiekamal/codebyart-ats-resume-builder.git
 
 # Navigate to project directory
 cd codebyart-ats-resume-builder
@@ -108,23 +108,23 @@ This app can be deployed to any static hosting platform. See [docs/DEPLOYMENT.md
 | `npm run build` | Build for production |
 | `npm run preview` | Preview production build |
 
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
 ## Credits
 
-- **Designed by:** [@techiekamal21](https://github.com/techiekamal21)
+- **Designed by:** [@techiekamal](https://github.com/techiekamal)
 - **Powered by:** [Connect Kreations](https://connectkreations.com) & [CodeByArt](https://codebyart.com)
 
 ## License
 
-MIT License - feel free to use this project for personal or commercial purposes.
+**All Rights Reserved** © 2024 CodeByArt / Connect Kreations
+
+This project is proprietary software. Unauthorized copying, modification, distribution, or use of this software, via any medium, is strictly prohibited without explicit written permission from the author.
+
+For licensing inquiries, contact: [connectkreations.com](https://connectkreations.com)
 
 ---
 
 <div align="center">
 
-**Made with ❤️ by [techiekamal](https://instagram.com/techiekamal)**
+**Made with ❤️ by [@techiekamal](https://github.com/techiekamal)**
 
 </div>
