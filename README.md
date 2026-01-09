@@ -115,7 +115,7 @@ This app can be deployed to any static hosting platform. See [docs/DEPLOYMENT.md
 
 ## License
 
-**All Rights Reserved** © 2024 CodeByArt / Connect Kreations
+**All Rights Reserved** © 2026 CodeByArt / Connect Kreations
 
 This project is proprietary software. Unauthorized copying, modification, distribution, or use of this software, via any medium, is strictly prohibited without explicit written permission from the author.
 
