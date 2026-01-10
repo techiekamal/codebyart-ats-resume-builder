@@ -33,6 +33,7 @@ export interface EducationEntry {
   fieldOfStudy: string;
   graduationDate: string;
   gpa?: string;
+  gradeType?: 'CGPA' | 'Percentage' | 'GPA';
 }
 
 export interface SkillEntry {

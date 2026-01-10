@@ -40,7 +40,8 @@ export const DEFAULT_SECTIONS: Section[] = [
         degree: 'Bachelor of Science',
         fieldOfStudy: 'Computer Science',
         graduationDate: '2019-05',
-        gpa: '3.8'
+        gpa: '3.8',
+        gradeType: 'CGPA'
       }
     ]
   },

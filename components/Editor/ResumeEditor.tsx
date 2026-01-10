@@ -304,6 +304,7 @@ export const ResumeEditor: React.FC<ResumeEditorProps> = ({ data, onChange }) =>
                 value={entry.achievements.join('\n')} 
                 onChange={e => updateSectionEntry(sectionId, entry.id, 'achievements', e.target.value)} 
             />
+            <p className="text-xs text-gray-500 mt-1">💡 Tip: Use **text** to highlight important keywords (e.g., **Python**, **40% improvement**)</p>
           </div>
           <div className="col-span-2 flex justify-end">
               <Button variant="danger" size="sm" icon={<Trash2 className="w-3 h-3"/>} onClick={() => removeEntry(sectionId, entry.id)}>Delete</Button>
@@ -397,6 +398,7 @@ export const ResumeEditor: React.FC<ResumeEditorProps> = ({ data, onChange }) =>
                         <Input label="Portfolio" value={data.personalInfo.portfolio || ''} onChange={e => updatePersonalInfo('portfolio', e.target.value)} />
                         <div className="col-span-2">
                             <TextArea label="Professional Summary" rows={4} value={data.personalInfo.summary} onChange={e => updatePersonalInfo('summary', e.target.value)} />
+                            <p className="text-xs text-gray-500 mt-1">💡 Tip: Use **text** to highlight keywords (e.g., **5+ years**, **React**)</p>
                         </div>
                     </div>
                 )}
@@ -429,7 +431,19 @@ export const ResumeEditor: React.FC<ResumeEditorProps> = ({ data, onChange }) =>
                                                 <Input label="Degree" value={entry.degree} onChange={e => updateSectionEntry(sectionId, entry.id, 'degree', e.target.value)} />
                                                 <Input label="Field of Study" value={entry.fieldOfStudy} onChange={e => updateSectionEntry(sectionId, entry.id, 'fieldOfStudy', e.target.value)} />
                                                 <Input label="Graduation Date" value={entry.graduationDate} onChange={e => updateSectionEntry(sectionId, entry.id, 'graduationDate', e.target.value)} />
-                                                <Input label="GPA" value={entry.gpa || ''} onChange={e => updateSectionEntry(sectionId, entry.id, 'gpa', e.target.value)} />
+                                                <div className="flex flex-col">
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Grade Type</label>
+                                                    <select
+                                                        className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none bg-white"
+                                                        value={entry.gradeType || 'CGPA'}
+                                                        onChange={e => updateSectionEntry(sectionId, entry.id, 'gradeType', e.target.value)}
+                                                    >
+                                                        <option value="CGPA">CGPA</option>
+                                                        <option value="Percentage">Percentage</option>
+                                                        <option value="GPA">GPA</option>
+                                                    </select>
+                                                </div>
+                                                <Input label={entry.gradeType || 'CGPA'} value={entry.gpa || ''} onChange={e => updateSectionEntry(sectionId, entry.id, 'gpa', e.target.value)} />
                                                 <div className="col-span-2 flex justify-end">
                                                     <Button variant="danger" size="sm" icon={<Trash2 className="w-3 h-3"/>} onClick={() => removeEntry(sectionId, entry.id)}>Delete</Button>
                                                 </div>
