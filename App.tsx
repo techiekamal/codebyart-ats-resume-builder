@@ -12,10 +12,23 @@ import { Download, CheckCircle, RefreshCw, Github, Instagram, Briefcase, HelpCir
 const STORAGE_KEY = 'codebyart_resume_data';
 const VERSION_KEY = 'codebyart_app_version';
 const NOTIFICATION_DISMISSED_KEY = 'codebyart_notification_dismissed';
-const CURRENT_VERSION = '1.4.0';
+const WELCOME_SHOWN_KEY = 'codebyart_welcome_shown';
+const CURRENT_VERSION = '1.5.0';
 
 // Changelog data - Update this whenever new features are added
 const CHANGELOG = [
+  {
+    version: '1.5.0',
+    date: 'January 2026',
+    title: 'Compact Layout & Heading Colors',
+    changes: [
+      { type: 'feature', text: 'Heading color picker - choose from 8 colors' },
+      { type: 'improvement', text: 'Optimized text sizes (headings 12px, descriptions 10px)' },
+      { type: 'improvement', text: 'Reduced side spacing for better space utilization' },
+      { type: 'improvement', text: 'Tighter section spacing to fit more content' },
+      { type: 'feature', text: 'Welcome screen with support option' },
+    ]
+  },
   {
     version: '1.4.0',
     date: 'January 2026',
@@ -184,6 +197,82 @@ const UpdateNotificationModal: React.FC<{ onClose: () => void }> = ({ onClose })
       <Button variant="primary" className="w-full" onClick={onClose}>
         Got it, let's build my resume!
       </Button>
+    </div>
+  </div>
+);
+
+// Welcome Screen Component (shown on first visit)
+const WelcomeScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => (
+  <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
+    <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden transform transition-all scale-100">
+      {/* Header with gradient */}
+      <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 p-6 text-white text-center">
+        <div className="bg-white/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Briefcase className="w-8 h-8" />
+        </div>
+        <h2 className="text-2xl font-bold mb-2">Welcome to CodeByArt Resume Builder! 🎉</h2>
+        <p className="text-white/90 text-sm">Create professional, ATS-friendly resumes in minutes</p>
+      </div>
+      
+      {/* Content */}
+      <div className="p-6">
+        <div className="space-y-3 mb-6">
+          <div className="flex items-start gap-3">
+            <div className="bg-green-100 p-2 rounded-lg flex-shrink-0">
+              <CheckCircle className="w-4 h-4 text-green-600" />
+            </div>
+            <div>
+              <h4 className="font-semibold text-gray-800 text-sm">100% Free & Private</h4>
+              <p className="text-gray-600 text-xs">No sign-up required. Your data stays on your device.</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <div className="bg-blue-100 p-2 rounded-lg flex-shrink-0">
+              <Zap className="w-4 h-4 text-blue-600" />
+            </div>
+            <div>
+              <h4 className="font-semibold text-gray-800 text-sm">Instant PDF Export</h4>
+              <p className="text-gray-600 text-xs">Download your resume with one click.</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <div className="bg-purple-100 p-2 rounded-lg flex-shrink-0">
+              <Clock className="w-4 h-4 text-purple-600" />
+            </div>
+            <div>
+              <h4 className="font-semibold text-gray-800 text-sm">Auto-Save</h4>
+              <p className="text-gray-600 text-xs">Your progress is saved automatically.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Buy Me a Coffee Section */}
+        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 mb-5">
+          <div className="flex items-center gap-3">
+            <span className="text-3xl">☕</span>
+            <div className="flex-1">
+              <h4 className="font-bold text-gray-800 text-sm">Love this tool?</h4>
+              <p className="text-gray-600 text-xs">If this helped you land your dream job, consider buying me a coffee! Your support keeps this tool free for everyone.</p>
+            </div>
+          </div>
+          <a 
+            href="https://buymeacoffee.com/techiekamal" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="mt-3 w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-md hover:shadow-lg"
+          >
+            <span>☕</span> Buy Me a Coffee
+          </a>
+        </div>
+
+        <Button variant="primary" className="w-full" onClick={onClose}>
+          Start Building My Resume →
+        </Button>
+        
+        <p className="text-center text-gray-400 text-xs mt-4">
+          Made with ❤️ by <a href="https://codebyart.com" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">CodeByArt</a>
+        </p>
+      </div>
     </div>
   </div>
 );
@@ -509,6 +598,7 @@ const App: React.FC = () => {
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [showUpdateNotification, setShowUpdateNotification] = useState(false);
   const [showFeaturesModal, setShowFeaturesModal] = useState(false);
+  const [showWelcomeScreen, setShowWelcomeScreen] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'info' | 'warning' } | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -517,14 +607,19 @@ const App: React.FC = () => {
     const savedData = loadFromLocalStorage();
     const savedVersion = localStorage.getItem(VERSION_KEY);
     const notificationDismissed = localStorage.getItem(NOTIFICATION_DISMISSED_KEY);
+    const welcomeShown = localStorage.getItem(WELCOME_SHOWN_KEY);
     
     if (savedData) {
       setResumeData(savedData);
       setToast({ message: 'Resume loaded from saved data', type: 'success' });
     }
     
-    // Show update notification if version changed or first visit
-    if (savedVersion !== CURRENT_VERSION && notificationDismissed !== CURRENT_VERSION) {
+    // Show welcome screen on first visit
+    if (!welcomeShown) {
+      setShowWelcomeScreen(true);
+    }
+    // Show update notification if version changed (but not on first visit)
+    else if (savedVersion !== CURRENT_VERSION && notificationDismissed !== CURRENT_VERSION) {
       setShowUpdateNotification(true);
     }
     
@@ -748,6 +843,13 @@ const App: React.FC = () => {
         </div>
 
         {/* Modals */}
+        {showWelcomeScreen && (
+          <WelcomeScreen onClose={() => {
+            localStorage.setItem(WELCOME_SHOWN_KEY, 'true');
+            setShowWelcomeScreen(false);
+          }} />
+        )}
+
         {showUpdateNotification && (
           <UpdateNotificationModal onClose={handleDismissUpdateNotification} />
         )}

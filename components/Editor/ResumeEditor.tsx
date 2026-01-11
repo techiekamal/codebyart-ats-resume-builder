@@ -400,6 +400,31 @@ export const ResumeEditor: React.FC<ResumeEditorProps> = ({ data, onChange }) =>
                             <TextArea label="Professional Summary" rows={4} value={data.personalInfo.summary} onChange={e => updatePersonalInfo('summary', e.target.value)} />
                             <p className="text-xs text-gray-500 mt-1">💡 Tip: Use **text** to highlight keywords (e.g., **5+ years**, **React**)</p>
                         </div>
+                        {/* Heading Color Picker */}
+                        <div className="col-span-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Heading Color</label>
+                            <div className="flex flex-wrap gap-2">
+                                {[
+                                    { color: '#2563eb', name: 'Blue' },
+                                    { color: '#16a34a', name: 'Green' },
+                                    { color: '#dc2626', name: 'Red' },
+                                    { color: '#9333ea', name: 'Purple' },
+                                    { color: '#ea580c', name: 'Orange' },
+                                    { color: '#0891b2', name: 'Cyan' },
+                                    { color: '#4b5563', name: 'Gray' },
+                                    { color: '#000000', name: 'Black' },
+                                ].map(({ color, name }) => (
+                                    <button
+                                        key={color}
+                                        type="button"
+                                        onClick={() => onChange({ ...data, headingColor: color, colorAccent: color })}
+                                        className={`w-8 h-8 rounded-full border-2 transition-all ${(data.headingColor || data.colorAccent) === color ? 'ring-2 ring-offset-2 ring-blue-500 scale-110' : 'border-gray-300 hover:scale-105'}`}
+                                        style={{ backgroundColor: color }}
+                                        title={name}
+                                    />
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 )}
             </div>

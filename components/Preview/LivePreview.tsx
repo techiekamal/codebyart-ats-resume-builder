@@ -32,26 +32,28 @@ const parseHighlightedText = (text: string, accentColor: string): React.ReactNod
 
 export const LivePreview: React.FC<LivePreviewProps> = ({ data, scale = 1 }) => {
   const { personalInfo, sections, sectionOrder, colorAccent } = data;
+  // Use headingColor if available, otherwise fall back to colorAccent
+  const headingColor = (data as any).headingColor || colorAccent;
 
   const getSectionById = (id: string) => sections.find(s => s.id === id);
 
   const renderExperience = (entries: ExperienceEntry[]) => (
-    <div className="space-y-2.5">
+    <div className="space-y-2">
       {entries.map(entry => (
         <div key={entry.id} className="break-inside-avoid">
           <div className="flex justify-between items-baseline">
-            <h4 className="font-bold text-black text-sm">{entry.title}</h4>
-            <span className="text-xs text-gray-700 whitespace-nowrap">
+            <h4 className="font-bold text-black" style={{ fontSize: '12px' }}>{entry.title}</h4>
+            <span className="text-gray-700 whitespace-nowrap" style={{ fontSize: '10px' }}>
               {entry.startDate} – {entry.isCurrent ? 'Present' : entry.endDate}
             </span>
           </div>
           <div className="flex justify-between items-baseline">
-            <span className="font-semibold text-gray-800 text-sm">{entry.company}</span>
-            <span className="text-xs text-gray-600 italic">{entry.location}</span>
+            <span className="font-semibold text-gray-800" style={{ fontSize: '11px' }}>{entry.company}</span>
+            <span className="text-gray-600 italic" style={{ fontSize: '10px' }}>{entry.location}</span>
           </div>
-          <ul className="list-disc list-outside ml-4 space-y-0 text-xs text-gray-800 mt-0.5">
+          <ul className="list-disc list-outside ml-3.5 space-y-0 text-gray-800 mt-0.5" style={{ fontSize: '10px' }}>
             {entry.achievements.map((ach, i) => (
-              <li key={i} className="leading-tight">{parseHighlightedText(ach, colorAccent)}</li>
+              <li key={i} className="leading-snug">{parseHighlightedText(ach, colorAccent)}</li>
             ))}
           </ul>
         </div>
@@ -60,14 +62,14 @@ export const LivePreview: React.FC<LivePreviewProps> = ({ data, scale = 1 }) => 
   );
 
   const renderEducation = (entries: EducationEntry[]) => (
-    <div className="space-y-1.5">
+    <div className="space-y-1">
       {entries.map(entry => (
         <div key={entry.id} className="break-inside-avoid">
            <div className="flex justify-between items-baseline">
-            <h4 className="font-bold text-black text-sm">{entry.institution}</h4>
-            <span className="text-xs text-gray-700">{entry.graduationDate}</span>
+            <h4 className="font-bold text-black" style={{ fontSize: '12px' }}>{entry.institution}</h4>
+            <span className="text-gray-700" style={{ fontSize: '10px' }}>{entry.graduationDate}</span>
           </div>
-          <div className="text-gray-800 text-xs">
+          <div className="text-gray-800" style={{ fontSize: '10px' }}>
             {entry.degree} in {entry.fieldOfStudy}
             {entry.gpa && <span className="text-gray-700 ml-2">{entry.gradeType || 'CGPA'}: {entry.gpa}{entry.gradeType === 'Percentage' ? '%' : ''}</span>}
           </div>
@@ -77,9 +79,9 @@ export const LivePreview: React.FC<LivePreviewProps> = ({ data, scale = 1 }) => 
   );
 
   const renderSkills = (entries: SkillEntry[]) => (
-    <div className="space-y-1">
+    <div className="space-y-0.5">
        {entries.map(entry => (
-         <div key={entry.id} className="text-xs break-inside-avoid">
+         <div key={entry.id} className="break-inside-avoid" style={{ fontSize: '10px' }}>
             <span className="font-bold text-black capitalize">{entry.category}: </span>
             <span className="text-gray-800">{entry.skills.join(', ')}</span>
          </div>
@@ -88,20 +90,20 @@ export const LivePreview: React.FC<LivePreviewProps> = ({ data, scale = 1 }) => 
   );
 
   const renderProjects = (entries: ProjectEntry[]) => (
-     <div className="space-y-2">
+     <div className="space-y-1.5">
       {entries.map(entry => (
         <div key={entry.id} className="break-inside-avoid">
           <div className="flex justify-between items-baseline">
-            <h4 className="font-bold text-black text-sm">
+            <h4 className="font-bold text-black" style={{ fontSize: '12px' }}>
                 {entry.name}
-                {entry.url && <a href={`https://${entry.url}`} className="text-blue-600 text-xs ml-2 font-normal" target="_blank" rel="noreferrer">{entry.url}</a>}
+                {entry.url && <a href={`https://${entry.url}`} className="text-blue-600 ml-2 font-normal" style={{ fontSize: '10px' }} target="_blank" rel="noreferrer">{entry.url}</a>}
             </h4>
-            <span className="text-xs text-gray-700">
+            <span className="text-gray-700" style={{ fontSize: '10px' }}>
               {entry.startDate} {entry.endDate && `– ${entry.endDate}`}
             </span>
           </div>
-          <p className="text-xs text-gray-800 leading-tight">{parseHighlightedText(entry.description, colorAccent)}</p>
-          <div className="text-xs text-gray-700">
+          <p className="text-gray-800 leading-snug" style={{ fontSize: '10px' }}>{parseHighlightedText(entry.description, colorAccent)}</p>
+          <div className="text-gray-700" style={{ fontSize: '10px' }}>
             <span className="font-medium text-black">Technologies:</span> {entry.technologies.join(', ')}
           </div>
         </div>
@@ -110,7 +112,7 @@ export const LivePreview: React.FC<LivePreviewProps> = ({ data, scale = 1 }) => 
   );
 
   const renderCustom = (entries: CustomEntry[]) => (
-      <div className="space-y-2">
+      <div className="space-y-1.5">
           {entries.map(entry => {
               const titleField = entry.fields.find(f => f.type === 'text');
               const dateField = entry.fields.find(f => f.type === 'date');
@@ -120,19 +122,19 @@ export const LivePreview: React.FC<LivePreviewProps> = ({ data, scale = 1 }) => 
                 <div key={entry.id} className="break-inside-avoid">
                    <div className="flex justify-between items-baseline">
                        {titleField && (
-                           <h4 className="font-bold text-black text-sm">{titleField.value}</h4>
+                           <h4 className="font-bold text-black" style={{ fontSize: '12px' }}>{titleField.value}</h4>
                        )}
                        {dateField && (
-                           <span className="text-xs text-gray-700 whitespace-nowrap ml-auto">{dateField.value}</span>
+                           <span className="text-gray-700 whitespace-nowrap ml-auto" style={{ fontSize: '10px' }}>{dateField.value}</span>
                        )}
                    </div>
-                   <div className="text-xs text-gray-800">
+                   <div className="text-gray-800" style={{ fontSize: '10px' }}>
                        {otherFields.map(field => {
                            if (field.type === 'bullets') {
                                return (
-                                   <ul key={field.id} className="list-disc list-outside ml-4 space-y-0 mt-0.5">
+                                   <ul key={field.id} className="list-disc list-outside ml-3.5 space-y-0 mt-0.5">
                                        {(field.value as string[]).map((v, i) => (
-                                           <li key={i} className="leading-tight">{parseHighlightedText(v, colorAccent)}</li>
+                                           <li key={i} className="leading-snug">{parseHighlightedText(v, colorAccent)}</li>
                                        ))}
                                    </ul>
                                );
@@ -162,22 +164,22 @@ export const LivePreview: React.FC<LivePreviewProps> = ({ data, scale = 1 }) => 
 
   return (
     <div 
-        className="a4-paper p-[8mm] text-gray-900 origin-top"
-        style={{ transform: `scale(${scale})` }}
+        className="a4-paper text-gray-900 origin-top"
+        style={{ transform: `scale(${scale})`, padding: '6mm 8mm' }}
     >
       {/* Header - Name Only */}
-      <header className="border-b-2 pb-2 mb-3" style={{ borderColor: colorAccent }}>
-        <h1 className="text-2xl font-bold uppercase tracking-wide text-black">
+      <header className="border-b-2 pb-1.5 mb-2" style={{ borderColor: headingColor }}>
+        <h1 className="text-xl font-bold uppercase tracking-wide text-black">
             {personalInfo.fullName}
         </h1>
       </header>
 
       {/* Contact Section - ATS Friendly */}
-      <section className="mb-3 break-inside-avoid">
-        <h2 className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: colorAccent }}>
+      <section className="mb-2 break-inside-avoid">
+        <h2 className="font-bold uppercase tracking-wider mb-0.5" style={{ color: headingColor, fontSize: '12px' }}>
           Contact
         </h2>
-        <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-xs text-gray-800">
+        <div className="flex flex-wrap gap-x-3 gap-y-0 text-gray-800" style={{ fontSize: '10px' }}>
           {personalInfo.email && (
             <div className="flex items-center gap-1">
               <span className="font-semibold text-black">Email:</span>
@@ -229,11 +231,11 @@ export const LivePreview: React.FC<LivePreviewProps> = ({ data, scale = 1 }) => 
 
       {/* Summary */}
       {personalInfo.summary && (
-        <section className="mb-3 break-inside-avoid">
-            <h2 className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: colorAccent }}>
+        <section className="mb-2 break-inside-avoid">
+            <h2 className="font-bold uppercase tracking-wider mb-0.5" style={{ color: headingColor, fontSize: '12px' }}>
                 Professional Summary
             </h2>
-            <p className="text-xs leading-tight text-gray-800">
+            <p className="leading-snug text-gray-800" style={{ fontSize: '10px' }}>
                 {parseHighlightedText(personalInfo.summary, colorAccent)}
             </p>
         </section>
@@ -245,8 +247,8 @@ export const LivePreview: React.FC<LivePreviewProps> = ({ data, scale = 1 }) => 
         if (!section || !section.isVisible) return null;
 
         return (
-          <section key={section.id} className="mb-3">
-            <h2 className="text-xs font-bold uppercase tracking-wider mb-1.5 border-b pb-0.5" style={{ color: colorAccent, borderColor: '#e5e7eb' }}>
+          <section key={section.id} className="mb-2">
+            <h2 className="font-bold uppercase tracking-wider mb-1 border-b pb-0.5" style={{ color: headingColor, borderColor: '#e5e7eb', fontSize: '12px' }}>
                 {section.title}
             </h2>
             

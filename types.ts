@@ -84,6 +84,7 @@ export interface ResumeData {
   sectionOrder: string[]; // Array of section IDs
   templateId: string;
   colorAccent: string;
+  headingColor?: string;
 }
 
 export interface ATSScore {
