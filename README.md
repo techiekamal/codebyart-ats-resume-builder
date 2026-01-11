@@ -47,6 +47,8 @@
 - **ATS-Friendly Format** - Properly labeled sections for ATS parsing
 
 ### 🎨 Customization
+- **Font Family Selection** - Choose from 5 ATS-friendly fonts (Arial, Times New Roman, Calibri, Georgia, Verdana)
+- **Heading Color Picker** - Choose from 8 professional colors
 - **Text Highlighting** - Use `**text**` to bold important keywords
 - **Custom Sections** - Add certifications, awards, publications, etc.
 - **Grade Type Selection** - Choose CGPA, Percentage, or GPA
@@ -159,6 +161,17 @@ codebyart-ats-resume-builder/
 ---
 
 ## 📜 Changelog
+
+### v1.6.0 (January 2026)
+- ✨ Font family picker - 5 ATS-friendly fonts (Arial, Times New Roman, Calibri, Georgia, Verdana)
+- 🔧 Fixed PDF export spacing - now matches live preview exactly
+- ⚡ Optimized side padding to 5mm for better content fit
+
+### v1.5.0 (January 2026)
+- ✨ Heading color picker - choose from 8 colors
+- ✨ Welcome screen with Buy Me a Coffee support option
+- ⚡ Optimized text sizes (headings 12pt, descriptions 10pt)
+- ⚡ Tighter section spacing to fit more content
 
 ### v1.4.0 (January 2026)
 - ✨ Added Features & Changelog page

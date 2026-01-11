@@ -18,10 +18,7 @@ const parseHighlightedText = (text: string, accentColor: string): React.ReactNod
       // Remove ** markers and render as bold black
       const highlightedText = part.slice(2, -2);
       return (
-        <strong 
-          key={index} 
-          className="font-bold text-black"
-        >
+        <strong key={index} style={{ fontWeight: 700, color: '#000' }}>
           {highlightedText}
         </strong>
       );
@@ -32,28 +29,48 @@ const parseHighlightedText = (text: string, accentColor: string): React.ReactNod
 
 export const LivePreview: React.FC<LivePreviewProps> = ({ data, scale = 1 }) => {
   const { personalInfo, sections, sectionOrder, colorAccent } = data;
-  // Use headingColor if available, otherwise fall back to colorAccent
-  const headingColor = (data as any).headingColor || colorAccent;
+  const headingColor = data.headingColor || colorAccent;
+  const fontFamily = data.fontFamily || 'Arial';
 
   const getSectionById = (id: string) => sections.find(s => s.id === id);
 
+  // Font family mapping
+  const getFontFamily = () => {
+    switch(fontFamily) {
+      case 'Times New Roman': return '"Times New Roman", Times, serif';
+      case 'Georgia': return 'Georgia, serif';
+      case 'Calibri': return 'Calibri, sans-serif';
+      case 'Verdana': return 'Verdana, sans-serif';
+      default: return 'Arial, Helvetica, sans-serif';
+    }
+  };
+
+  // Common styles
+  const styles = {
+    heading: { fontSize: '12pt', fontWeight: 700 as const, color: '#000', fontFamily: getFontFamily() },
+    subheading: { fontSize: '11pt', fontWeight: 600 as const, color: '#374151', fontFamily: getFontFamily() },
+    body: { fontSize: '10pt', color: '#374151', lineHeight: 1.4, fontFamily: getFontFamily() },
+    small: { fontSize: '10pt', color: '#4b5563', fontFamily: getFontFamily() },
+    sectionTitle: { fontSize: '12pt', fontWeight: 700 as const, color: headingColor, textTransform: 'uppercase' as const, letterSpacing: '0.05em', fontFamily: getFontFamily() },
+  };
+
   const renderExperience = (entries: ExperienceEntry[]) => (
-    <div className="space-y-2">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
       {entries.map(entry => (
-        <div key={entry.id} className="break-inside-avoid">
-          <div className="flex justify-between items-baseline">
-            <h4 className="font-bold text-black" style={{ fontSize: '12px' }}>{entry.title}</h4>
-            <span className="text-gray-700 whitespace-nowrap" style={{ fontSize: '10px' }}>
+        <div key={entry.id} style={{ pageBreakInside: 'avoid' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+            <span style={styles.heading}>{entry.title}</span>
+            <span style={styles.small}>
               {entry.startDate} – {entry.isCurrent ? 'Present' : entry.endDate}
             </span>
           </div>
-          <div className="flex justify-between items-baseline">
-            <span className="font-semibold text-gray-800" style={{ fontSize: '11px' }}>{entry.company}</span>
-            <span className="text-gray-600 italic" style={{ fontSize: '10px' }}>{entry.location}</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+            <span style={styles.subheading}>{entry.company}</span>
+            <span style={{ ...styles.small, fontStyle: 'italic' }}>{entry.location}</span>
           </div>
-          <ul className="list-disc list-outside ml-3.5 space-y-0 text-gray-800 mt-0.5" style={{ fontSize: '10px' }}>
+          <ul style={{ ...styles.body, marginLeft: '16px', marginTop: '2px', paddingLeft: '0', listStyleType: 'disc' }}>
             {entry.achievements.map((ach, i) => (
-              <li key={i} className="leading-snug">{parseHighlightedText(ach, colorAccent)}</li>
+              <li key={i} style={{ marginBottom: '1px' }}>{parseHighlightedText(ach, colorAccent)}</li>
             ))}
           </ul>
         </div>
@@ -62,16 +79,16 @@ export const LivePreview: React.FC<LivePreviewProps> = ({ data, scale = 1 }) => 
   );
 
   const renderEducation = (entries: EducationEntry[]) => (
-    <div className="space-y-1">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
       {entries.map(entry => (
-        <div key={entry.id} className="break-inside-avoid">
-           <div className="flex justify-between items-baseline">
-            <h4 className="font-bold text-black" style={{ fontSize: '12px' }}>{entry.institution}</h4>
-            <span className="text-gray-700" style={{ fontSize: '10px' }}>{entry.graduationDate}</span>
+        <div key={entry.id} style={{ pageBreakInside: 'avoid' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+            <span style={styles.heading}>{entry.institution}</span>
+            <span style={styles.small}>{entry.graduationDate}</span>
           </div>
-          <div className="text-gray-800" style={{ fontSize: '10px' }}>
+          <div style={styles.body}>
             {entry.degree} in {entry.fieldOfStudy}
-            {entry.gpa && <span className="text-gray-700 ml-2">{entry.gradeType || 'CGPA'}: {entry.gpa}{entry.gradeType === 'Percentage' ? '%' : ''}</span>}
+            {entry.gpa && <span style={{ marginLeft: '8px' }}>{entry.gradeType || 'CGPA'}: {entry.gpa}{entry.gradeType === 'Percentage' ? '%' : ''}</span>}
           </div>
         </div>
       ))}
@@ -79,32 +96,32 @@ export const LivePreview: React.FC<LivePreviewProps> = ({ data, scale = 1 }) => 
   );
 
   const renderSkills = (entries: SkillEntry[]) => (
-    <div className="space-y-0.5">
-       {entries.map(entry => (
-         <div key={entry.id} className="break-inside-avoid" style={{ fontSize: '10px' }}>
-            <span className="font-bold text-black capitalize">{entry.category}: </span>
-            <span className="text-gray-800">{entry.skills.join(', ')}</span>
-         </div>
-       ))}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+      {entries.map(entry => (
+        <div key={entry.id} style={styles.body}>
+          <span style={{ fontWeight: 700, color: '#000', textTransform: 'capitalize' }}>{entry.category}: </span>
+          <span>{entry.skills.join(', ')}</span>
+        </div>
+      ))}
     </div>
   );
 
   const renderProjects = (entries: ProjectEntry[]) => (
-     <div className="space-y-1.5">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
       {entries.map(entry => (
-        <div key={entry.id} className="break-inside-avoid">
-          <div className="flex justify-between items-baseline">
-            <h4 className="font-bold text-black" style={{ fontSize: '12px' }}>
-                {entry.name}
-                {entry.url && <a href={`https://${entry.url}`} className="text-blue-600 ml-2 font-normal" style={{ fontSize: '10px' }} target="_blank" rel="noreferrer">{entry.url}</a>}
-            </h4>
-            <span className="text-gray-700" style={{ fontSize: '10px' }}>
+        <div key={entry.id} style={{ pageBreakInside: 'avoid' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+            <span style={styles.heading}>
+              {entry.name}
+              {entry.url && <a href={`https://${entry.url}`} style={{ ...styles.small, color: '#2563eb', marginLeft: '8px', fontWeight: 400 }} target="_blank" rel="noreferrer">{entry.url}</a>}
+            </span>
+            <span style={styles.small}>
               {entry.startDate} {entry.endDate && `– ${entry.endDate}`}
             </span>
           </div>
-          <p className="text-gray-800 leading-snug" style={{ fontSize: '10px' }}>{parseHighlightedText(entry.description, colorAccent)}</p>
-          <div className="text-gray-700" style={{ fontSize: '10px' }}>
-            <span className="font-medium text-black">Technologies:</span> {entry.technologies.join(', ')}
+          <p style={styles.body}>{parseHighlightedText(entry.description, colorAccent)}</p>
+          <div style={styles.body}>
+            <span style={{ fontWeight: 600, color: '#000' }}>Technologies:</span> {entry.technologies.join(', ')}
           </div>
         </div>
       ))}
@@ -112,132 +129,95 @@ export const LivePreview: React.FC<LivePreviewProps> = ({ data, scale = 1 }) => 
   );
 
   const renderCustom = (entries: CustomEntry[]) => (
-      <div className="space-y-1.5">
-          {entries.map(entry => {
-              const titleField = entry.fields.find(f => f.type === 'text');
-              const dateField = entry.fields.find(f => f.type === 'date');
-              const otherFields = entry.fields.filter(f => f !== titleField && f !== dateField);
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+      {entries.map(entry => {
+        const titleField = entry.fields.find(f => f.type === 'text');
+        const dateField = entry.fields.find(f => f.type === 'date');
+        const otherFields = entry.fields.filter(f => f !== titleField && f !== dateField);
 
-              return (
-                <div key={entry.id} className="break-inside-avoid">
-                   <div className="flex justify-between items-baseline">
-                       {titleField && (
-                           <h4 className="font-bold text-black" style={{ fontSize: '12px' }}>{titleField.value}</h4>
-                       )}
-                       {dateField && (
-                           <span className="text-gray-700 whitespace-nowrap ml-auto" style={{ fontSize: '10px' }}>{dateField.value}</span>
-                       )}
-                   </div>
-                   <div className="text-gray-800" style={{ fontSize: '10px' }}>
-                       {otherFields.map(field => {
-                           if (field.type === 'bullets') {
-                               return (
-                                   <ul key={field.id} className="list-disc list-outside ml-3.5 space-y-0 mt-0.5">
-                                       {(field.value as string[]).map((v, i) => (
-                                           <li key={i} className="leading-snug">{parseHighlightedText(v, colorAccent)}</li>
-                                       ))}
-                                   </ul>
-                               );
-                           }
-                           if (field.type === 'url') {
-                               return (
-                                   <div key={field.id}>
-                                       <a href={field.value as string} className="text-blue-600 hover:underline" target="_blank" rel="noreferrer">
-                                           {field.value}
-                                       </a>
-                                   </div>
-                               );
-                           }
-                           return (
-                               <div key={field.id} className={field.type === 'date' ? 'text-gray-600 italic' : ''}>
-                                   {parseHighlightedText(field.value as string, colorAccent)}
-                               </div>
-                           );
-                       })}
-                   </div>
-                </div>
-              );
-          })}
-      </div>
+        return (
+          <div key={entry.id} style={{ pageBreakInside: 'avoid' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+              {titleField && <span style={styles.heading}>{titleField.value}</span>}
+              {dateField && <span style={styles.small}>{dateField.value}</span>}
+            </div>
+            <div style={styles.body}>
+              {otherFields.map(field => {
+                if (field.type === 'bullets') {
+                  return (
+                    <ul key={field.id} style={{ marginLeft: '16px', marginTop: '2px', paddingLeft: '0', listStyleType: 'disc' }}>
+                      {(field.value as string[]).map((v, i) => (
+                        <li key={i} style={{ marginBottom: '1px' }}>{parseHighlightedText(v, colorAccent)}</li>
+                      ))}
+                    </ul>
+                  );
+                }
+                if (field.type === 'url') {
+                  return (
+                    <div key={field.id}>
+                      <a href={field.value as string} style={{ color: '#2563eb' }} target="_blank" rel="noreferrer">{field.value}</a>
+                    </div>
+                  );
+                }
+                return (
+                  <div key={field.id} style={field.type === 'date' ? { fontStyle: 'italic', color: '#6b7280' } : {}}>
+                    {parseHighlightedText(field.value as string, colorAccent)}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
-
 
   return (
     <div 
-        className="a4-paper text-gray-900 origin-top"
-        style={{ transform: `scale(${scale})`, padding: '6mm 8mm' }}
+      className="a4-paper"
+      style={{ 
+        transform: `scale(${scale})`, 
+        transformOrigin: 'top',
+        padding: '6mm 5mm',
+        color: '#1f2937',
+        fontFamily: getFontFamily(),
+        lineHeight: 1.4,
+      }}
     >
       {/* Header - Name Only */}
-      <header className="border-b-2 pb-1.5 mb-2" style={{ borderColor: headingColor }}>
-        <h1 className="text-xl font-bold uppercase tracking-wide text-black">
-            {personalInfo.fullName}
+      <header style={{ borderBottom: `2px solid ${headingColor}`, paddingBottom: '6px', marginBottom: '10px' }}>
+        <h1 style={{ fontSize: '18pt', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.02em', color: '#000', margin: 0 }}>
+          {personalInfo.fullName}
         </h1>
       </header>
 
-      {/* Contact Section - ATS Friendly */}
-      <section className="mb-2 break-inside-avoid">
-        <h2 className="font-bold uppercase tracking-wider mb-0.5" style={{ color: headingColor, fontSize: '12px' }}>
-          Contact
-        </h2>
-        <div className="flex flex-wrap gap-x-3 gap-y-0 text-gray-800" style={{ fontSize: '10px' }}>
+      {/* Contact Section */}
+      <section style={{ marginBottom: '10px' }}>
+        <h2 style={{ ...styles.sectionTitle, marginBottom: '4px' }}>Contact</h2>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', ...styles.body }}>
           {personalInfo.email && (
-            <div className="flex items-center gap-1">
-              <span className="font-semibold text-black">Email:</span>
-              <a href={`mailto:${personalInfo.email}`} className="hover:text-blue-600 hover:underline">
-                {personalInfo.email}
-              </a>
-            </div>
+            <div><span style={{ fontWeight: 600, color: '#000' }}>Email:</span> <a href={`mailto:${personalInfo.email}`} style={{ color: '#374151' }}>{personalInfo.email}</a></div>
           )}
           {personalInfo.phone && (
-            <div className="flex items-center gap-1">
-              <span className="font-semibold text-black">Phone:</span>
-              <span>{personalInfo.phone}</span>
-            </div>
+            <div><span style={{ fontWeight: 600, color: '#000' }}>Phone:</span> {personalInfo.phone}</div>
           )}
           {personalInfo.location && (
-            <div className="flex items-center gap-1">
-              <span className="font-semibold text-black">Location:</span>
-              <span>{personalInfo.location}</span>
-            </div>
+            <div><span style={{ fontWeight: 600, color: '#000' }}>Location:</span> {personalInfo.location}</div>
           )}
           {personalInfo.linkedIn && (
-            <div className="flex items-center gap-1">
-              <span className="font-semibold text-black">LinkedIn:</span>
-              <a 
-                href={personalInfo.linkedIn.startsWith('http') ? personalInfo.linkedIn : `https://${personalInfo.linkedIn}`} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="hover:text-blue-600 hover:underline"
-              >
-                {personalInfo.linkedIn}
-              </a>
-            </div>
+            <div><span style={{ fontWeight: 600, color: '#000' }}>LinkedIn:</span> <a href={personalInfo.linkedIn.startsWith('http') ? personalInfo.linkedIn : `https://${personalInfo.linkedIn}`} target="_blank" rel="noopener noreferrer" style={{ color: '#374151' }}>{personalInfo.linkedIn}</a></div>
           )}
           {personalInfo.portfolio && (
-            <div className="flex items-center gap-1">
-              <span className="font-semibold text-black">Portfolio:</span>
-              <a 
-                href={personalInfo.portfolio.startsWith('http') ? personalInfo.portfolio : `https://${personalInfo.portfolio}`} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="hover:text-blue-600 hover:underline"
-              >
-                {personalInfo.portfolio}
-              </a>
-            </div>
+            <div><span style={{ fontWeight: 600, color: '#000' }}>Portfolio:</span> <a href={personalInfo.portfolio.startsWith('http') ? personalInfo.portfolio : `https://${personalInfo.portfolio}`} target="_blank" rel="noopener noreferrer" style={{ color: '#374151' }}>{personalInfo.portfolio}</a></div>
           )}
         </div>
       </section>
 
       {/* Summary */}
       {personalInfo.summary && (
-        <section className="mb-2 break-inside-avoid">
-            <h2 className="font-bold uppercase tracking-wider mb-0.5" style={{ color: headingColor, fontSize: '12px' }}>
-                Professional Summary
-            </h2>
-            <p className="leading-snug text-gray-800" style={{ fontSize: '10px' }}>
-                {parseHighlightedText(personalInfo.summary, colorAccent)}
-            </p>
+        <section style={{ marginBottom: '10px' }}>
+          <h2 style={{ ...styles.sectionTitle, marginBottom: '4px' }}>Professional Summary</h2>
+          <p style={{ ...styles.body, margin: 0 }}>{parseHighlightedText(personalInfo.summary, colorAccent)}</p>
         </section>
       )}
 
@@ -247,9 +227,9 @@ export const LivePreview: React.FC<LivePreviewProps> = ({ data, scale = 1 }) => 
         if (!section || !section.isVisible) return null;
 
         return (
-          <section key={section.id} className="mb-2">
-            <h2 className="font-bold uppercase tracking-wider mb-1 border-b pb-0.5" style={{ color: headingColor, borderColor: '#e5e7eb', fontSize: '12px' }}>
-                {section.title}
+          <section key={section.id} style={{ marginBottom: '10px' }}>
+            <h2 style={{ ...styles.sectionTitle, marginBottom: '6px', borderBottom: '1px solid #e5e7eb', paddingBottom: '2px' }}>
+              {section.title}
             </h2>
             
             {section.type === 'experience' && renderExperience(section.entries as ExperienceEntry[])}

@@ -13,10 +13,21 @@ const STORAGE_KEY = 'codebyart_resume_data';
 const VERSION_KEY = 'codebyart_app_version';
 const NOTIFICATION_DISMISSED_KEY = 'codebyart_notification_dismissed';
 const WELCOME_SHOWN_KEY = 'codebyart_welcome_shown';
-const CURRENT_VERSION = '1.5.0';
+const CURRENT_VERSION = '1.6.0';
 
 // Changelog data - Update this whenever new features are added
 const CHANGELOG = [
+  {
+    version: '1.6.0',
+    date: 'January 2026',
+    title: 'Font Family Selection & PDF Spacing Fix',
+    changes: [
+      { type: 'feature', text: 'Font family picker - 5 ATS-friendly fonts (Arial, Times New Roman, Calibri, Georgia, Verdana)' },
+      { type: 'fix', text: 'Fixed PDF export spacing - now matches live preview exactly' },
+      { type: 'improvement', text: 'Optimized side padding to 5mm for better content fit' },
+      { type: 'improvement', text: 'Font selection persists in downloaded PDF' },
+    ]
+  },
   {
     version: '1.5.0',
     date: 'January 2026',
@@ -665,6 +676,10 @@ const App: React.FC = () => {
         const userName = resumeData?.personalInfo?.fullName || 'Resume';
         const sanitizedName = userName.replace(/\s+/g, '_');
         
+        // Store original transform and temporarily remove it for PDF export
+        const originalTransform = resumeContent.style.transform;
+        resumeContent.style.transform = 'none';
+        
         const opt = {
             margin: 0,
             filename: `${sanitizedName}_Resume.pdf`,
@@ -672,7 +687,9 @@ const App: React.FC = () => {
             html2canvas: { 
                 scale: 2,
                 useCORS: true,
-                letterRendering: true
+                letterRendering: true,
+                width: 210 * 3.78, // A4 width in pixels at 96dpi
+                windowWidth: 210 * 3.78
             },
             jsPDF: { 
                 unit: 'mm', 
@@ -681,7 +698,10 @@ const App: React.FC = () => {
             }
         };
 
-        html2pdf().set(opt).from(resumeContent).save();
+        html2pdf().set(opt).from(resumeContent).save().then(() => {
+            // Restore original transform after PDF is generated
+            resumeContent.style.transform = originalTransform;
+        });
         setToast({ message: 'PDF download started!', type: 'success' });
     } else {
         setToast({ message: 'Unable to export PDF. Please try again.', type: 'warning' });

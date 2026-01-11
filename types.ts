@@ -85,6 +85,7 @@ export interface ResumeData {
   templateId: string;
   colorAccent: string;
   headingColor?: string;
+  fontFamily?: string;
 }
 
 export interface ATSScore {

@@ -425,6 +425,29 @@ export const ResumeEditor: React.FC<ResumeEditorProps> = ({ data, onChange }) =>
                                 ))}
                             </div>
                         </div>
+                        {/* Font Family Picker */}
+                        <div className="col-span-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Font Family (ATS-Friendly)</label>
+                            <div className="flex flex-wrap gap-2">
+                                {[
+                                    { font: 'Arial', label: 'Arial' },
+                                    { font: 'Times New Roman', label: 'Times' },
+                                    { font: 'Calibri', label: 'Calibri' },
+                                    { font: 'Georgia', label: 'Georgia' },
+                                    { font: 'Verdana', label: 'Verdana' },
+                                ].map(({ font, label }) => (
+                                    <button
+                                        key={font}
+                                        type="button"
+                                        onClick={() => onChange({ ...data, fontFamily: font })}
+                                        className={`px-3 py-1.5 rounded-md border-2 text-sm transition-all ${(data.fontFamily || 'Arial') === font ? 'border-blue-500 bg-blue-50 text-blue-700 font-medium' : 'border-gray-300 hover:border-gray-400'}`}
+                                        style={{ fontFamily: font }}
+                                    >
+                                        {label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 )}
             </div>
